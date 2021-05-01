@@ -1,8 +1,6 @@
 ActiveRecord::Base.transaction do
   if User.count.zero?
-    user = User.new(provider: 'email', uid: 'test@example.com', name: 'yamada', email: 'test@example.com')
-    user.password = 'password'
-    user.save!
+    User.create!(provider: 'email', uid: 'test@example.com', name: 'yamada', email: 'test@example.com', password: 'password')
   end
 
   if Area.count.zero?
