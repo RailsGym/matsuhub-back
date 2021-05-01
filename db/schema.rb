@@ -10,7 +10,49 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_01_045832) do
+ActiveRecord::Schema.define(version: 2021_05_01_062041) do
+
+  create_table "areas", charset: "utf8mb4", force: :cascade do |t|
+    t.string "description", null: false
+    t.string "area_type", null: false
+    t.string "area_type_text", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "canvas", charset: "utf8mb4", force: :cascade do |t|
+    t.string "title", null: false
+    t.bigint "owner_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["owner_id"], name: "index_canvas_on_owner_id"
+  end
+
+  create_table "canvas_members", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "canvas_id", null: false
+    t.bigint "user_id", null: false
+    t.string "authority", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["canvas_id", "user_id"], name: "index_canvas_members_on_canvas_id_and_user_id", unique: true
+  end
+
+  create_table "labels", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "area_id", null: false
+    t.bigint "canvas_id", null: false
+    t.bigint "created_user_id", null: false
+    t.bigint "updated_user_id"
+    t.string "title", null: false
+    t.string "description"
+    t.integer "position", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["area_id", "canvas_id", "position"], name: "index_labels_on_area_id_and_canvas_id_and_position", unique: true
+    t.index ["area_id"], name: "index_labels_on_area_id"
+    t.index ["canvas_id"], name: "index_labels_on_canvas_id"
+    t.index ["created_user_id"], name: "index_labels_on_created_user_id"
+    t.index ["updated_user_id"], name: "index_labels_on_updated_user_id"
+  end
 
   create_table "users", charset: "utf8mb4", force: :cascade do |t|
     t.string "provider", default: "email", null: false
@@ -41,4 +83,7 @@ ActiveRecord::Schema.define(version: 2021_05_01_045832) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "canvas", "users", column: "owner_id"
+  add_foreign_key "labels", "users", column: "created_user_id"
+  add_foreign_key "labels", "users", column: "updated_user_id"
 end
