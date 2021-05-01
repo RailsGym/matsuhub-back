@@ -18,3 +18,9 @@ $ make up
 ### 終了
 
 Ctrl + C
+
+### サンプルユーザ
+```
+Email: test@example.com
+Password: password
+```
