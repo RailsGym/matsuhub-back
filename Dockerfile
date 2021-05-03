@@ -30,7 +30,6 @@ RUN apk upgrade && \
     zlib \
     zlib-dev
 
-RUN
 RUN gem install bundler
 RUN gem update
 
