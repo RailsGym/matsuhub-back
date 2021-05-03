@@ -2,7 +2,6 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
   before_action :set_canvas, only: %i[create]
 
   def create
-    Rails::logger::debug(current_user)
     label = @canvas.labels.new(label_params)
     label.created_user = current_user
     if label.save
