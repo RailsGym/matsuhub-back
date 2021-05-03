@@ -4,6 +4,7 @@ React x RailsのサンプルアプリのAPI側
 ### アプリ初期設定
 
 ```
+$ cp .env.sample .env.development
 $ make init
 ```
 
