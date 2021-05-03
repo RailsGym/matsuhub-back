@@ -6,4 +6,11 @@ class Label < ApplicationRecord
 
   validates :title, presence: true
   validates :position, presence: true
+
+  before_validation :build_position
+
+  def build_position
+    max_position = canvas.labels.where(area: area).maximum(:position)
+    self.position = max_position.present? ? max_position + 1 : 1
+  end
 end

@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      resources :canvas, only: %i[] do
+        resources :labels, only: %i[create]
+      end
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
           registrations: 'api/v1/auth/registrations'
       }
