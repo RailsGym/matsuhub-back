@@ -50,6 +50,4 @@ test:
 #
 production:
   <<: *default
-  database: matsuhub_back_production
-  username: matsuhub_back
-  password: <%= ENV['MATSUHUB_BACK_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
