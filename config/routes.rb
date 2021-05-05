@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      scope :users do
+        resource :me, controller: 'me', only: %i[show]
+      end
       resources :canvas, only: %i[index create] do
         resources :labels, only: %i[create]
       end
