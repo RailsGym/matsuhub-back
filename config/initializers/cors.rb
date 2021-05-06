@@ -11,6 +11,6 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '*',
              headers: :any,
              methods: [:get, :post, :put, :patch, :delete, :options, :head],
-             expose: ['Per-Page', 'Total', 'Link']
+             expose: ['Per-Page', 'Total', 'Link', 'access-token', 'expiry', 'token-type', 'uid', 'client']
   end
 end
