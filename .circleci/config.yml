@@ -47,17 +47,17 @@ jobs:
 
       - run:
           name: Sleep for waiting launch db
-          command: sleep 20
+          command: sleep 10
 
       - run:
           name: Setup db
-          command: docker-compose exec api rails db:create db:migrate
+          command: docker-compose run api rails db:create db:migrate
 
       - run:
           name: Run tests
           command: |
             mkdir /tmp/test-results
-            docker-compose exec api bundle exec rspec --format progress \
+            docker-compose run api bundle exec rspec --format progress \
               --format RspecJunitFormatter \
               --out /tmp/test-results/rspec.xml
 
