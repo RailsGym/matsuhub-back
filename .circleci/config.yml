@@ -1,71 +1,67 @@
 version: 2.1
-
 jobs:
-  build:
-    machine:
-      image: circleci/classic:edge
-
+  build_and_test:
+    docker:
+      - image: circleci/ruby:2.7.3-node
+        environment:
+          RAILS_ENV: test
+          DB_HOST: '127.0.0.1'
+          TZ: UTC
+      - image: mysql:5.7.33
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          TZ: UTC
     steps:
       - checkout
+
+      # https://discuss.circleci.com/t/using-bundler-2-0-during-ci-fails/27411/3
+      - run:
+          name: Configure Bundler
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+      - run:
+          name: Update sources list
+          command: sudo apt-get update
+
+      - run:
+          name: Install MySQL client
+          command: |
+            sudo apt-get install default-mysql-client
       - restore_cache:
           keys:
-            - docker-{{ checksum ".circleci/config.yml" }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}-{{ checksum "Gemfile.lock" }}
-          paths:
-            - ~/caches/images.tar
+            - bundle-cache-{{ checksum "Gemfile.lock" }}
+            - bundle-cache-
       - run:
-          name: Install Docker Compose
+          name: setting
           command: |
-            curl -L https://github.com/docker/compose/releases/download/1.27.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
+            cp .env.sample .env.test
       - run:
-          name: Set up project environment variables
-          command: cp .env.sample .env.development
-
-      - run:
-          name: docker-compose build
-          command: |
-            if [ ! -f ~/caches/images.tar ]; then
-              docker-compose build --no-cache
-              mkdir -p ~/caches
-              docker save $(docker images | awk 'NR>=2 && ! /^<none>/{print $1}') -o ~/caches/images.tar
-            fi
+          name: bundle install
+          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
+      # bundle installされたものcacheする
       - save_cache:
-          key: docker-{{ checksum ".circleci/config.yml" }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}-{{ checksum "Gemfile.lock" }}
-          paths:
-            - ~/caches/images.tar
+          key: bundle-cache-{{ checksum "Gemfile.lock" }}
+          paths: ./vendor/bundle
       - run:
-          name: docker load
-          command: |
-            if [[ -e ~/caches/images.tar ]]; then
-              docker load -i ~/caches/images.tar
-            fi
-      - run:
-          name: docker-compose up
-          command: docker-compose up -d
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
 
       - run:
-          name: Sleep for waiting launch db
-          command: sleep 10
-
+          name: setup db
+          command: bundle exec rails db:create db:migrate
       - run:
-          name: Setup db
-          command: docker-compose run api rails db:create db:migrate
-
-      - run:
-          name: Run tests
+          name: run tests
           command: |
             mkdir /tmp/test-results
-            docker-compose run api bundle exec rspec --format progress \
-              --format RspecJunitFormatter \
-              --out /tmp/test-results/rspec.xml
-
-      # TODO: machine executor のせいか現状出力されない
-      - store_test_results:
-          path: /tmp/test-results
-
-      - run:
-          name: docker-compose down
-          command: docker-compose down
-          when: always
+            bundle exec rspec --profile 10 \
+                            --format progress \
+                            --format RspecJunitFormatter \
+                            --out /tmp/test-results/rspec.xml \
+                            --tag ~benchmark \
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build_and_test
