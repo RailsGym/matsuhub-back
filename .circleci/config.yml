@@ -1,0 +1,71 @@
+version: 2.1
+
+jobs:
+  build:
+    machine:
+      image: circleci/classic:edge
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - docker-{{ checksum ".circleci/config.yml" }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/caches/images.tar
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.27.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+
+      - run:
+          name: Set up project environment variables
+          command: cp .env.sample .env
+
+      - run:
+          name: docker-compose build
+          command: |
+            if [ ! -f ~/caches/images.tar ]; then
+              docker-compose build --no-cache
+              mkdir -p ~/caches
+              docker save $(docker images | awk 'NR>=2 && ! /^<none>/{print $1}') -o ~/caches/images.tar
+            fi
+      - save_cache:
+          key: docker-{{ checksum ".circleci/config.yml" }}-{{ checksum "docker-compose.yml" }}-{{ checksum "Dockerfile" }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - ~/caches/images.tar
+      - run:
+          name: docker load
+          command: |
+            if [[ -e ~/caches/images.tar ]]; then
+              docker load -i ~/caches/images.tar
+            fi
+      - run:
+          name: docker-compose up
+          command: docker-compose up -d
+
+      - run:
+          name: Sleep for waiting launch db
+          command: sleep 10
+
+      - run:
+          name: Setup db
+          command: docker-compose exec api rails db:create db:migrate
+
+      - run:
+          name: Run tests
+          command: |
+            mkdir /tmp/test-results
+            docker-compose exec api bundle exec rspec --format progress \
+              --format RspecJunitFormatter \
+              --out /tmp/test-results/rspec.xml
+
+      # TODO: machine executor のせいか現状出力されない
+      - store_test_results:
+          path: /tmp/test-results
+
+      - run:
+          name: docker-compose down
+          command: docker-compose down
+          when: always
