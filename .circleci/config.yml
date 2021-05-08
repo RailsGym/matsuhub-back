@@ -47,7 +47,7 @@ jobs:
 
       - run:
           name: Sleep for waiting launch db
-          command: sleep 10
+          command: sleep 20
 
       - run:
           name: Setup db
