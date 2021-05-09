@@ -14,6 +14,7 @@ gem 'devise'
 gem 'devise_token_auth'
 gem 'rack-cors'
 gem 'enumerize'
+gem 'active_interaction'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
