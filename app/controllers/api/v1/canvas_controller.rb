@@ -29,7 +29,7 @@ class Api::V1::CanvasController < Api::V1::ApplicationController
   private
 
   def canvas_params
-    params.require(:canvas).permit(:title)
+    params.require(:canva).permit(:title)
   end
 
   def set_canvas
