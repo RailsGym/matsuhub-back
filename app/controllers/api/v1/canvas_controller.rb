@@ -20,6 +20,7 @@ class Api::V1::CanvasController < Api::V1::ApplicationController
     @canvas = Canvas.new(canvas_params)
     @canvas.owner = current_user
     if @canvas.save
+      @canvas.canvas_members.create(user_id: current_user.id, authority: "admin")
       render json: { canvas: @canvas, errors: [] }
     else
       render json: { errors: @canvas.errors.full_messages }
