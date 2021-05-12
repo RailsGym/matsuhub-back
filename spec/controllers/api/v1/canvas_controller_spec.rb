@@ -10,8 +10,8 @@ RSpec.describe Api::V1::CanvasController, type: :request do
 
   describe '.index' do
     it 'ログイン済みユーザが参照できるキャンバス一覧が取得できる' do
-      user = { email: 'yamada@example.com', password: 'password' }
-      auth_tokens = sign_in(user)
+      login_user = { email: 'yamada@example.com', password: 'password' }
+      auth_tokens = sign_in(login_user)
       get '/api/v1/canvas', headers: auth_tokens, as: :json
       expect(response).to have_http_status :ok
 
@@ -29,26 +29,33 @@ RSpec.describe Api::V1::CanvasController, type: :request do
 
   describe '.create' do
     it 'ログイン済みユーザがキャンバスを作成できる' do
-      user = { email: 'yamada@example.com', password: 'password' }
-      auth_tokens = sign_in(user)
+      login_user = { email: 'yamada@example.com', password: 'password' }
+      auth_tokens = sign_in(login_user)
       post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title:'title' }}
       expect(response).to have_http_status :ok
 
       body = JSON.parse(response.body)
       expect(body['canvas']['title']).to eq 'title'
       expect(body['canvas']['owner_id']).to eq 1
+      expect(Canvas.count).to eq 4
+      expect(Canvas.last).to have_attributes(title: 'title', owner: user)
+      expect(user.canvas_members.count).to eq 3
     end
 
     it 'ログイン済みでない場合ユーザはキャンバスを作成できない' do
       post '/api/v1/canvas', params: {canva: { title:'title' }}
       expect(response).to have_http_status :unauthorized
+      expect(Canvas.count).to eq 3
+      expect(user.canvas_members.count).to eq 2
     end
 
     it 'キャンバス名が空文字の場合キャンバスを作成できない' do
-      user = { email: 'yamada@example.com', password: 'password' }
-      auth_tokens = sign_in(user)
+      login_user = { email: 'yamada@example.com', password: 'password' }
+      auth_tokens = sign_in(login_user)
       post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title: "" }}
       expect(response).to have_http_status :bad_request
+      expect(Canvas.count).to eq 3
+      expect(user.canvas_members.count).to eq 2
     end
   end
 end
