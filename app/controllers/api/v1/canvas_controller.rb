@@ -23,7 +23,7 @@ class Api::V1::CanvasController < Api::V1::ApplicationController
       @canvas.canvas_members.create(user_id: current_user.id, authority: 'admin')
       render json: { canvas: @canvas, errors: [] }
     else
-      render json: { errors: @canvas.errors.full_messages }
+      render json: { errors: @canvas.errors.full_messages }, status: :bad_request
     end
   end
 

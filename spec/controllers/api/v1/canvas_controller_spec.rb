@@ -20,5 +20,35 @@ RSpec.describe Api::V1::CanvasController, type: :request do
       expect(body['canvases'].first['title']).to eq 'テストキャンバス1'
       expect(body['canvases'].second['title']).to eq 'テストキャンバス2'
     end
+
+    it 'ログイン済みでない場合キャンバス一覧を取得できない' do
+      get '/api/v1/canvas'
+      expect(response).to have_http_status :unauthorized
+    end
+  end
+
+  describe '.create' do
+    it 'ログイン済みユーザがキャンバスを作成できる' do
+      user = { email: 'yamada@example.com', password: 'password' }
+      auth_tokens = sign_in(user)
+      post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title:'title' }}
+      expect(response).to have_http_status :ok
+
+      body = JSON.parse(response.body)
+      expect(body['canvas']['title']).to eq 'title'
+      expect(body['canvas']['owner_id']).to eq 1
+    end
+
+    it 'ログイン済みでない場合ユーザはキャンバスを作成できない' do
+      post '/api/v1/canvas', params: {canva: { title:'title' }}
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'キャンバス名が空文字の場合キャンバスを作成できない' do
+      user = { email: 'yamada@example.com', password: 'password' }
+      auth_tokens = sign_in(user)
+      post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title: "" }}
+      expect(response).to have_http_status :bad_request
+    end
   end
 end
