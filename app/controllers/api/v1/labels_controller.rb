@@ -7,7 +7,7 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
     if label.save
       render json: { label: label, errors: [] }
     else
-      render json: { errors: label.errors.full_messages }
+      render json: { errors: label.errors.full_messages }, status: :bad_request
     end
   end
 
