@@ -3,3 +3,6 @@ ja:
     attributes:
       canvas:
         title: タイトル
+      user:
+        password: パスワード
+        email: メールアドレス
