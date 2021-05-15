@@ -28,7 +28,7 @@ describe Canvas::Show do
       expect(result[:canvas][:title]).to eq 'テストキャンバス'
       expect(result[:canvas][:areas].count).to eq 2
       first_area = result[:canvas][:areas].first
-      expect(first_area[:area_type]).to eq 'purpose'
+      expect(first_area[:area_type_text]).to eq '目的'
       expect(first_area[:description]).to eq 'われわれはなぜこの事業をやるのか？'
       expect(first_area[:labels].count).to eq 2
       expect(first_area[:labels].pluck(:title)).to eq ['テスト', 'テスト2']
