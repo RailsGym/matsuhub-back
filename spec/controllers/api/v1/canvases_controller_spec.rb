@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::CanvasController, type: :request do
+RSpec.describe Api::V1::CanvasesController, type: :request do
   let!(:user) { create(:user, email: 'yamada@example.com', password: 'password') }
   let!(:canvas) { create(:canvas, owner: user) }
   let!(:canvas2) { create(:canvas, owner: user) }
@@ -12,7 +12,7 @@ RSpec.describe Api::V1::CanvasController, type: :request do
     it 'ログイン済みユーザが参照できるキャンバス一覧が取得できる' do
       login_user = { email: 'yamada@example.com', password: 'password' }
       auth_tokens = sign_in(login_user)
-      get '/api/v1/canvas', headers: auth_tokens, as: :json
+      get '/api/v1/canvases', headers: auth_tokens, as: :json
       expect(response).to have_http_status :ok
 
       body = JSON.parse(response.body)
@@ -22,7 +22,7 @@ RSpec.describe Api::V1::CanvasController, type: :request do
     end
 
     it 'ログイン済みでない場合キャンバス一覧を取得できない' do
-      get '/api/v1/canvas'
+      get '/api/v1/canvases'
       expect(response).to have_http_status :unauthorized
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe Api::V1::CanvasController, type: :request do
     it 'ログイン済みユーザがキャンバスを作成できる' do
       login_user = { email: 'yamada@example.com', password: 'password' }
       auth_tokens = sign_in(login_user)
-      post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title:'title' }}
+      post '/api/v1/canvases', headers: auth_tokens, params: {canvas: { title:'title' }}
       expect(response).to have_http_status :ok
 
       body = JSON.parse(response.body)
@@ -43,7 +43,7 @@ RSpec.describe Api::V1::CanvasController, type: :request do
     end
 
     it 'ログイン済みでない場合ユーザはキャンバスを作成できない' do
-      post '/api/v1/canvas', params: {canva: { title:'title' }}
+      post '/api/v1/canvases', params: {canvas: { title:'title' }}
       expect(response).to have_http_status :unauthorized
       expect(Canvas.count).to eq 3
       expect(user.canvas_members.count).to eq 2
@@ -52,7 +52,7 @@ RSpec.describe Api::V1::CanvasController, type: :request do
     it 'キャンバス名が空文字の場合キャンバスを作成できない' do
       login_user = { email: 'yamada@example.com', password: 'password' }
       auth_tokens = sign_in(login_user)
-      post '/api/v1/canvas', headers: auth_tokens, params: {canva: { title: "" }}
+      post '/api/v1/canvases', headers: auth_tokens, params: {canvas: { title: "" }}
       expect(response).to have_http_status :bad_request
       expect(Canvas.count).to eq 3
       expect(user.canvas_members.count).to eq 2

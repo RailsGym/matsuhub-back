@@ -1,4 +1,4 @@
-class Api::V1::CanvasController < Api::V1::ApplicationController
+class Api::V1::CanvasesController < Api::V1::ApplicationController
   before_action :set_canvas, only: %i[show]
 
   def index
@@ -30,7 +30,7 @@ class Api::V1::CanvasController < Api::V1::ApplicationController
   private
 
   def canvas_params
-    params.require(:canva).permit(:title)
+    params.require(:canvas).permit(:title)
   end
 
   def set_canvas

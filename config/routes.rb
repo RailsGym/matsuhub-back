@@ -6,8 +6,8 @@ Rails.application.routes.draw do
       scope :users do
         resource :me, controller: 'me', only: %i[show]
       end
-      resources :canvas, only: %i[index show create] do
-        resources :labels, only: %i[create]
+      resources :canvases, only: %i[index show create] do
+        post ':canvas_id/labels', to: 'labels#create', on: :collection
       end
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
           registrations: 'api/v1/auth/registrations'
