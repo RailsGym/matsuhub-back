@@ -14,8 +14,7 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
   private
 
   def set_canvas
-    # FIXME: パラメータ名をcanvas_idにしたい
-    @canvas = current_user.canvas.find(params[:canva_id])
+    @canvas = current_user.canvas.find(params[:canvas_id])
   end
 
   def label_params
