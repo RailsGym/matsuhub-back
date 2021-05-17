@@ -4,7 +4,7 @@ describe Canvas::Show do
   let(:outcome) { described_class.run(inputs) }
   let(:result) { outcome.result }
   let!(:area) { create(:area) }
-  let!(:area2) { create(:area, area_type: 'vision', area_type_text: 'ビジョン', description: '中長期的に顧客どういう状況になってもらいたいか？') }
+  let!(:area2) { create(:area, area_type: 'vision', description: '中長期的に顧客どういう状況になってもらいたいか？') }
   let(:canvas) { create(:canvas, title: 'テストキャンバス') }
   let(:user) { create(:user) }
   let!(:label) { create(:label, area: area, canvas: canvas, created_user: user, title: 'テスト') }
@@ -28,8 +28,7 @@ describe Canvas::Show do
       expect(result[:canvas][:title]).to eq 'テストキャンバス'
       expect(result[:canvas][:areas].count).to eq 2
       first_area = result[:canvas][:areas].first
-      expect(first_area[:area_type]).to eq 'purpose'
-      expect(first_area[:area_type_text]).to eq 'Purpose'
+      expect(first_area[:area_type_text]).to eq '目的'
       expect(first_area[:description]).to eq 'われわれはなぜこの事業をやるのか？'
       expect(first_area[:labels].count).to eq 2
       expect(first_area[:labels].pluck(:title)).to eq ['テスト', 'テスト2']

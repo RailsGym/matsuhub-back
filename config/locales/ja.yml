@@ -3,3 +3,21 @@ ja:
     attributes:
       canvas:
         title: タイトル
+        
+  enumerize:
+    area:
+      area_type:
+        purpose: 目的
+        vision: ビジョン
+        solution: 実現手段
+        superiority: 優位性
+        indicator: 評価指標
+        value: 提案価値
+        explicit_problem: 顕在課題
+        implicit_problem: 潜在課題
+        substitute: 代替手段
+        channel: チャネル
+        situation: 状況
+        trend: 傾向
+        profit: 収益モデル
+        market: 想定する市場と規模
