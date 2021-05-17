@@ -3,7 +3,9 @@ ja:
     attributes:
       canvas:
         title: タイトル
-        
+      user:
+        password: パスワード
+        email: メールアドレス
   enumerize:
     area:
       area_type:
