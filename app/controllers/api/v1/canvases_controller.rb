@@ -1,5 +1,5 @@
 class Api::V1::CanvasesController < Api::V1::ApplicationController
-  before_action :set_canvas, only: %i[show]
+  before_action :set_canvas, only: %i[show update]
 
   def index
     canvas = Canvas.where(owner_id: current_user.id)
@@ -21,6 +21,15 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
     @canvas.owner = current_user
     @canvas.canvas_members.build(user: current_user, authority: :admin)
     if @canvas.save
+      render json: { canvas: @canvas, errors: [] }
+    else
+      render json: { errors: @canvas.errors.full_messages }, status: :bad_request
+    end
+  end
+
+  def update
+    # TODO: activeInteractionを利用した書き方にしたい
+    if @canvas.update(canvas_params)
       render json: { canvas: @canvas, errors: [] }
     else
       render json: { errors: @canvas.errors.full_messages }, status: :bad_request
