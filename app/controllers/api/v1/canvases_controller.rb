@@ -28,11 +28,12 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
   end
 
   def update
-    # TODO: activeInteractionを利用した書き方にしたい
-    if @canvas.update(canvas_params)
-      render json: { canvas: @canvas, errors: [] }
+    outcome = Canvas::Update.run(canvas: @canvas, title: canvas_params[:title])
+
+    if outcome.result[:errors].blank?
+      render json: outcome.result
     else
-      render json: { errors: @canvas.errors.full_messages }, status: :bad_request
+      render json: outcome.result, status: :bad_request
     end
   end
 
