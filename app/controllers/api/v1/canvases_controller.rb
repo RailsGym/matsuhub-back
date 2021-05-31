@@ -2,8 +2,8 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
   before_action :set_canvas, only: %i[show]
 
   def index
-    canvas = Canvas.where(owner_id: current_user.id)
-    render json: { canvases: canvas }
+    canvases = Canvas.where(owner_id: current_user.id)
+    render json: canvases
   end
 
   def show

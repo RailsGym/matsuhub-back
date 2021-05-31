@@ -16,9 +16,9 @@ RSpec.describe Api::V1::CanvasesController, type: :request do
       expect(response).to have_http_status :ok
 
       body = JSON.parse(response.body)
-      expect(body['canvases'].count).to eq 2
-      expect(body['canvases'].first['title']).to eq 'テストキャンバス1'
-      expect(body['canvases'].second['title']).to eq 'テストキャンバス2'
+      expect(body.count).to eq 2
+      expect(body.first['title']).to eq 'テストキャンバス1'
+      expect(body.second['title']).to eq 'テストキャンバス2'
     end
 
     it 'ログイン済みでない場合キャンバス一覧を取得できない' do
