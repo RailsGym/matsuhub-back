@@ -22,15 +22,15 @@ describe Canvas::Update do
   context 'キャンバスが空文字の場合' do
     let(:inputs) { { canvas: canvas, title: ''} }
 
-    it { expect(outcome).to be_valid }
-    it { expect(outcome.result[:errors]).to eq ['タイトルを入力してください'] }
+    it { expect(outcome).to be_invalid }
+    it { expect(outcome.errors.full_messages).to eq ['タイトルを入力してください'] }
   end
 
   context '#execute' do
     it 'キャンバス名が更新できる' do
 
       expect(outcome).to be_valid
-      expect(result[:canvas][:title]).to eq 'テスト2キャンバス'
+      expect(result.title).to eq 'テスト2キャンバス'
       expect(canvas.title).to eq 'テスト2キャンバス'
     end
   end
