@@ -6,8 +6,7 @@ class Canvas::Update < ApplicationService
   presence: true
 
   def execute
-    if canvas.update(title: title)
-      canvas
-    end
+    errors.merge!(canvas.errors) unless canvas.update(title: title)
+    canvas
   end
 end
