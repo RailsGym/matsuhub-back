@@ -1,5 +1,5 @@
 class Api::V1::CanvasesController < Api::V1::ApplicationController
-  before_action :set_canvas, only: %i[show]
+  before_action :set_canvas, only: %i[show update]
 
   def index
     canvases = Canvas.where(owner_id: current_user.id)
@@ -24,6 +24,16 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
       render json: { canvas: @canvas, errors: [] }
     else
       render json: { errors: @canvas.errors.full_messages }, status: :bad_request
+    end
+  end
+
+  def update
+    outcome = Canvas::Update.run(canvas: @canvas, title: canvas_params[:title])
+
+    if outcome.valid?
+      render json: { canvas: outcome.result, errors: [] }
+    else
+      render json: { errors: outcome.errors.full_messages }, status: :bad_request
     end
   end
 
