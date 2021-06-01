@@ -2,11 +2,12 @@ class Canvas::Update < ApplicationService
   object :canvas, class: Canvas
   string :title
 
+  validates :title,
+  presence: true
+
   def execute
     if canvas.update(title: title)
-      { canvas: canvas, errors: [] }
-    else
-      { errors: canvas.errors.full_messages}
+      canvas
     end
   end
 end

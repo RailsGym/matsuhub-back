@@ -30,10 +30,10 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
   def update
     outcome = Canvas::Update.run(canvas: @canvas, title: canvas_params[:title])
 
-    if outcome.result[:errors].blank?
-      render json: outcome.result
+    if outcome.valid?
+      render json: { canvas: outcome.result, errors: [] }
     else
-      render json: outcome.result, status: :bad_request
+      render json: { errors: outcome.errors.full_messages }, status: :bad_request
     end
   end
 
