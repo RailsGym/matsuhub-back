@@ -2,10 +2,7 @@ require 'rails_helper'
 describe Canvas::Destroy do
   let(:outcome) { described_class.run(inputs) }
   let(:result) { outcome.result }
-  let!(:area) { create(:area) }
-  let!(:area2) { create(:area, area_type: 'vision', description: '中長期的に顧客どういう状況になってもらいたいか？') }
   let(:canvas) { create(:canvas, title: 'テストキャンバス') }
-  let(:user) { create(:user) }
   let(:inputs) {
     {
         canvas: canvas
