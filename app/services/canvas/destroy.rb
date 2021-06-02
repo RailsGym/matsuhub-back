@@ -2,8 +2,6 @@ class Canvas::Destroy < ApplicationService
   object :canvas, class: Canvas
 
   def execute
-    if canvas.destroy
-      canvas
-    end
+    errors.merge!(canvas.errors) unless canvas.destroy
   end
 end
