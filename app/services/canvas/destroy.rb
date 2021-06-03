@@ -3,5 +3,6 @@ class Canvas::Destroy < ApplicationService
 
   def execute
     errors.merge!(canvas.errors) unless canvas.destroy
+    canvas
   end
 end

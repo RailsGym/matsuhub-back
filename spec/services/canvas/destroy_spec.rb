@@ -18,7 +18,7 @@ describe Canvas::Destroy do
     it 'キャンバスが削除されている' do
 
       expect(outcome).to be_valid
-      expect(result).to eq nil
+      expect(result).to eq canvas
       expect(Canvas.count).to eq 0
     end
   end
