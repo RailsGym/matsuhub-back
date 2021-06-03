@@ -41,7 +41,7 @@ class Api::V1::CanvasesController < Api::V1::ApplicationController
     outcome = Canvas::Destroy.run(canvas: @canvas)
 
     if outcome.valid?
-      render json: { canvas: outcome.result, errors: [] }
+      render json: { errors: [] }
     else
       render json: { errors: outcome.errors.full_messages }, status: :bad_request
     end
