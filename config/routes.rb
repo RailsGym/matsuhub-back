@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       scope :users do
         resource :me, controller: 'me', only: %i[show]
       end
-      resources :canvases, only: %i[index show create update] do
+      resources :canvases, only: %i[index show create update destroy] do
         post ':canvas_id/labels', to: 'labels#create', on: :collection
       end
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
