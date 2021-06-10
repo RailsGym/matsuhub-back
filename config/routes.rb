@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       end
       resources :canvases, only: %i[index show create update destroy] do
         post ':canvas_id/labels', to: 'labels#create', on: :collection
+        patch ':canvas_id/labels', to: 'labels#update', on: :collection
       end
       mount_devise_token_auth_for 'User', at: 'auth', controllers: {
           registrations: 'api/v1/auth/registrations'
