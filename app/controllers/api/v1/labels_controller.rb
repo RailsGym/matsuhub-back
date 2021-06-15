@@ -16,7 +16,7 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
     outcome = Label::Update.run(label: @label, current_user_id: current_user.id, title: label_params[:title], area_id: label_params[:area_id], description: label_params[:description])
 
     if outcome.valid?
-      render json: { canvas: outcome.result, errors: [] }
+      render json: { label: outcome.result, errors: [] }
     else
       render json: { errors: outcome.errors.full_messages }, status: :bad_request
     end
