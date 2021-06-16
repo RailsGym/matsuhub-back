@@ -3,3 +3,5 @@ ja:
     attributes:
       canvas/update:
         title: タイトル
+      label/update:
+        title: タイトル
