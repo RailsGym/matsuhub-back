@@ -15,7 +15,7 @@ describe Label::Update do
       title: title,
       area_id: area.id,
       description: description,
-      current_user_id: user.id
+      user: user
     }
   }
 
@@ -33,7 +33,7 @@ describe Label::Update do
         title: '',
         area_id: area.id,
         description: description,
-        current_user_id: user.id
+        user: user
       }
     }
 

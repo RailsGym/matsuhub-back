@@ -13,7 +13,7 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
   end
 
   def update
-    outcome = Label::Update.run(label: @label, current_user_id: current_user.id, title: label_params[:title], area_id: label_params[:area_id], description: label_params[:description])
+    outcome = Label::Update.run(label_params.merge(label: @label, user: current_user))
 
     if outcome.valid?
       render json: { label: outcome.result, errors: [] }
