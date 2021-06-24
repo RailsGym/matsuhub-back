@@ -1,6 +1,6 @@
 class Api::V1::LabelsController < Api::V1::ApplicationController
   before_action :set_canvas, only: %i[create]
-  before_action :set_label, only: %i[update]
+  before_action :set_label, only: %i[update, destroy]
 
   def create
     label = @canvas.labels.new(label_params)
@@ -14,6 +14,16 @@ class Api::V1::LabelsController < Api::V1::ApplicationController
 
   def update
     outcome = Label::Update.run(label_params.merge(label: @label, user: current_user))
+
+    if outcome.valid?
+      render json: { label: outcome.result, errors: [] }
+    else
+      render json: { errors: outcome.errors.full_messages }, status: :bad_request
+    end
+  end
+
+  def destroy
+    outcome = Label::Destroy.run(label: @label)
 
     if outcome.valid?
       render json: { label: outcome.result, errors: [] }
