@@ -1,6 +1,6 @@
 class Api::V1::LabelsController < Api::V1::ApplicationController
   before_action :set_canvas, only: %i[create]
-  before_action :set_label, only: %i[update, destroy]
+  before_action :set_label, only: %i[update destroy]
 
   def create
     label = @canvas.labels.new(label_params)
